@@ -1,0 +1,23 @@
+{
+  "name": "comet",
+  "version": "1.0.0",
+  "description": "Build Desktop Apps with Electron, Golang, Bootstrap and Vuejs",
+  "main": "main.js",
+  "repository": {
+    "type": "git",
+    "url": "github.com/peteretelej/comet"
+  },
+  "keywords": [
+    "comet",
+    "electron",
+    "golang",
+    "vuejs",
+    "bootstrap",
+    "go"
+  ],
+  "author": "Peter Etelej",
+  "license": "ISC",
+  "dependencies": {
+    "electron": "^1.6.8"
+  }
+}
