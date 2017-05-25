@@ -22,11 +22,20 @@ go get -u github.com/peteretelej/comet
 
 Initialize and launch
 ```
-./comet init
+comet init
 # initiliazes comet
 
-./comet start
+comet start
 # launches app
+```
+
+### Launch Static Website/ Single Page App/ PWA as desktop app
+Assuming the directory ~/myapphtml is a static website with an index.html
+
+```
+cd ~/myapphtml
+comet init
+comet start -webapp .
 ```
 
 ### TODO
@@ -34,6 +43,7 @@ Initialize and launch
 - [x] Define basic projects structure and working example
 - [x] Launch electron from Go
 - [x] Setup comet CLI subcommands & usage (init,start)
+- [x] Support serving static website as desktop app
 - [ ] Setup app templates for easier bootstrapping options
 - [ ] __Packaging and distribution__
 

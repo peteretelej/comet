@@ -19,6 +19,7 @@ var (
 	// start subcommand flags
 	verbose = startCommand.Bool("v", false, "verbose mode")
 	dir     = startCommand.String("dir", "./", "directory to start comet from, where comet init was run")
+	webapp  = startCommand.String("webapp", "", "serve static web app from directory instead of comet server")
 )
 
 func main() {
@@ -38,16 +39,17 @@ func initProject() {
 	if len(os.Args) > 2 {
 		args = os.Args[2:]
 	}
-	initCommand.Parse(args)
+	if err := initCommand.Parse(args); err != nil {
+		log.Fatal(err)
+	}
 	fmt.Println("comet: initializing project, may take a few seconds..")
-	npm, err := exec.LookPath("npm")
-	if err != nil {
+	if _, err := exec.LookPath("npm"); err != nil {
 		log.Fatal("Failed to find `npm`. Did you install nodejs?")
 	}
 	if err := ice.InitAssets(); err != nil {
-		log.Fatal("Failed to setup comet environment: %v", err)
+		log.Fatalf("Failed to setup comet environment: %v", err)
 	}
-	cmd := exec.Command(npm, "install")
+	cmd := exec.Command("npm", "install")
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 	fmt.Printf("comet: Running %v\n", cmd.Args)
@@ -62,16 +64,17 @@ func startApp() {
 	if len(os.Args) > 2 {
 		args = os.Args[2:]
 	}
-	startCommand.Parse(args)
+	if err := startCommand.Parse(args); err != nil {
+		log.Fatal(err)
+	}
 	if err := os.Chdir(*dir); err != nil {
 		log.Fatalf("comet start: failed to change into directory: %v", err)
 	}
 	ice.Verbose = *verbose
 	go func() {
 		listen := "localhost:8080"
-		if err := ice.Serve(listen); err != nil {
-			log.Fatalf("Failed to launch app server: %v", err)
-		}
+		ice.Serve(listen, *webapp)
+
 	}()
 	electron := filepath.Join("node_modules", ".bin", "electron")
 	if _, err := os.Stat(electron); err != nil {
@@ -81,8 +84,7 @@ func startApp() {
 		log.Print("comet: launching electron")
 	}
 
-	out, err := exec.Command(electron, ".").CombinedOutput()
-	if err != nil {
+	if out, err := exec.Command(electron, ".").CombinedOutput(); err != nil {
 		log.Fatalf("comet unable to launch electron: %s", out)
 	}
 }
