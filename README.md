@@ -15,10 +15,9 @@ This is __Work In Progress__: Not ready for use.
 	
 ### Basic Usage
 
-Get the project
+Get comet
 ``` bash
 go get -u github.com/peteretelej/comet
-cd $GOPATH/src/github.com/peteretelej/comet
 ```
 
 Initialize and launch
@@ -30,11 +29,11 @@ Initialize and launch
 # launches app
 ```
 
-
 ### TODO
 
 - [x] Define basic projects structure and working example
 - [x] Launch electron from Go
+- [x] Setup comet CLI subcommands & usage (init,start)
 - [ ] Setup app templates for easier bootstrapping options
 - [ ] __Packaging and distribution__
 

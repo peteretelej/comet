@@ -39,17 +39,18 @@ func initProject() {
 		args = os.Args[2:]
 	}
 	initCommand.Parse(args)
-
 	fmt.Println("comet: initializing project, may take a few seconds..")
-
 	npm, err := exec.LookPath("npm")
 	if err != nil {
 		log.Fatal("Failed to find `npm`. Did you install nodejs?")
 	}
+	if err := ice.InitAssets(); err != nil {
+		log.Fatal("Failed to setup comet environment: %v", err)
+	}
 	cmd := exec.Command(npm, "install")
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
-	fmt.Println("comet: Running 'npm install'")
+	fmt.Printf("comet: Running %v\n", cmd.Args)
 	if err := cmd.Run(); err != nil {
 		log.Fatalf("comet: failed to initialize project :(")
 	}
