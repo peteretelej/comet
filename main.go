@@ -16,11 +16,9 @@ var (
 	initCommand  = flag.NewFlagSet("init", flag.ExitOnError)
 	startCommand = flag.NewFlagSet("start", flag.ExitOnError)
 
-	// init subcommand flags
-	dir = initCommand.String("dir", "./", "directory to work from")
-
 	// start subcommand flags
 	verbose = startCommand.Bool("v", false, "verbose mode")
+	dir     = startCommand.String("dir", "./", "directory to start comet from, where comet init was run")
 )
 
 func main() {
@@ -41,9 +39,7 @@ func initProject() {
 		args = os.Args[2:]
 	}
 	initCommand.Parse(args)
-	if err := os.Chdir(*dir); err != nil {
-		log.Fatalf("Failed to change into specified working directory: %v", err)
-	}
+
 	fmt.Println("comet: initializing project, may take a few seconds..")
 
 	npm, err := exec.LookPath("npm")
@@ -66,7 +62,9 @@ func startApp() {
 		args = os.Args[2:]
 	}
 	startCommand.Parse(args)
-
+	if err := os.Chdir(*dir); err != nil {
+		log.Fatalf("comet start: failed to change into directory: %v", err)
+	}
 	ice.Verbose = *verbose
 	go func() {
 		listen := "localhost:8080"
