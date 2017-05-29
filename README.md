@@ -8,11 +8,6 @@ Boostrap for desktop apps built with Electron and powered by Go. __WIP__
 This is __Work In Progress__: Not ready for use.
 
 
-### Dev Requirements:
-
-- Go
-- Nodejs (npm)
-	
 ### Basic Usage
 
 Get comet
