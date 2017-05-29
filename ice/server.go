@@ -13,7 +13,7 @@ import (
 var Verbose bool
 
 // Serve launches a comet ice server
-func Serve(listenAddr, dir string) {
+func Serve(listenAddr, dir string) error {
 	var svr *http.Server
 	switch dir {
 	case "":
@@ -30,9 +30,7 @@ func Serve(listenAddr, dir string) {
 		log.Printf("launching comet server at %s, serving '%s'", listenAddr, dir)
 	}
 
-	if err := svr.ListenAndServe(); err != nil {
-		log.Fatalf("comet: failed to launch: %v", err)
-	}
+	return svr.ListenAndServe()
 }
 
 // Server launches the comet http server

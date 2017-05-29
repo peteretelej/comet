@@ -1,28 +1,32 @@
 package ice
 
 import (
+	"fmt"
 	"io/ioutil"
 	"os"
+	"path/filepath"
 )
 
-// InitAssets creates static files required by comet init
+// InitAssets creates static files required by comet init in the directory specified
 // Skips prepping if all required files exist, and overwrites all if any is missing
-func InitAssets() error {
+func InitAssets(dir string) error {
+	fi, err := os.Stat(dir)
+	if err != nil {
+		return fmt.Errorf("specified directory %s does not exist", dir)
+	}
+	if !fi.IsDir() {
+		return fmt.Errorf("cannot init assets to file speficied %s, must be a directory", dir)
+	}
 	required := map[string]string{
 		"main.js":      mainJS,
 		"package.json": pkgJSON,
 	}
-	ok := true
-	for k := range required {
-		if _, err := os.Stat(k); err != nil {
-			ok = false
-		}
-	}
-	if ok {
-		return nil
-	}
 	for k, v := range required {
-		err := ioutil.WriteFile(k, []byte(v), 0644)
+		fn := filepath.Join(dir, k)
+		if _, err := os.Stat(fn); err == nil {
+			continue
+		}
+		err := ioutil.WriteFile(fn, []byte(v), 0644)
 		if err != nil {
 			return err
 		}

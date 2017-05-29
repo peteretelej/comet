@@ -29,62 +29,61 @@ func main() {
 	}
 	switch os.Args[1] {
 	case "init":
-		initProject()
+		if err := initProject(); err != nil {
+			log.Fatalf("comet init: %v", err)
+		}
 	case "start":
 		startApp()
+	case "package":
+		packageApp()
 	}
 }
-func initProject() {
-	var args []string
-	if len(os.Args) > 2 {
-		args = os.Args[2:]
+func initProject() error {
+	fmt.Println("comet: initializing project, please wait..")
+	if err := ice.GetElectron(); err != nil {
+		return err
 	}
-	if err := initCommand.Parse(args); err != nil {
-		log.Fatal(err)
+	appDir := filepath.Join("resources", "app")
+	if err := ice.InitAssets(appDir); err != nil {
+		return err
 	}
-	fmt.Println("comet: initializing project, may take a few seconds..")
-	if _, err := exec.LookPath("npm"); err != nil {
-		log.Fatal("Failed to find `npm`. Did you install nodejs?")
-	}
-	if err := ice.InitAssets(); err != nil {
-		log.Fatalf("Failed to setup comet environment: %v", err)
-	}
-	cmd := exec.Command("npm", "install")
-	cmd.Stdout = os.Stdout
-	cmd.Stderr = os.Stderr
-	fmt.Printf("comet: Running %v\n", cmd.Args)
-	if err := cmd.Run(); err != nil {
-		log.Fatalf("comet: failed to initialize project :(")
-	}
+
 	fmt.Println("comet: project initialized successfully. Launch with `comet start`")
+	return nil
 }
 
-func startApp() {
+func startApp() error {
 	var args []string
 	if len(os.Args) > 2 {
 		args = os.Args[2:]
 	}
 	if err := startCommand.Parse(args); err != nil {
-		log.Fatal(err)
+		return err
 	}
 	if err := os.Chdir(*dir); err != nil {
-		log.Fatalf("comet start: failed to change into directory: %v", err)
+		return fmt.Errorf("comet start: failed to change into directory: %v", err)
 	}
 	ice.Verbose = *verbose
 	go func() {
 		listen := "localhost:8080"
-		ice.Serve(listen, *webapp)
-
+		if err := ice.Serve(listen, *webapp); err != nil {
+			log.Printf("comet server crashed: %v", err)
+		}
 	}()
 	electron := filepath.Join("node_modules", ".bin", "electron")
 	if _, err := os.Stat(electron); err != nil {
-		log.Fatal("Failed to find electron in directory. Did you run `comet init`?")
+		return fmt.Errorf("Failed to find electron in directory. Did you run `comet init`?")
 	}
 	if *verbose {
 		log.Print("comet: launching electron")
 	}
 
 	if out, err := exec.Command(electron, ".").CombinedOutput(); err != nil {
-		log.Fatalf("comet unable to launch electron: %s", out)
+		return fmt.Errorf("comet unable to launch electron: %s", out)
 	}
+	return nil
+}
+
+func packageApp() {
+
 }
