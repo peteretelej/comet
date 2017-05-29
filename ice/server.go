@@ -18,11 +18,11 @@ func Serve(listenAddr, dir string) error {
 	switch dir {
 	case "":
 		svr = Server(listenAddr)
-		dir = "comet go server"
+		dir = "default comet app"
 	default:
 		index := filepath.Join(dir, "index.html")
 		if _, err := os.Stat(index); err != nil {
-			log.Fatalf("cannot launch http fileserver no index file: %s", index)
+			log.Fatalf("cannot launch http fileserver, no index file: %s", index)
 		}
 		svr = DirServe(listenAddr, dir)
 	}
@@ -94,16 +94,16 @@ const tmplHTML = `{{define "head"}}<!DOCTYPE html>
 </html>
 {{end}}
 {{define "index"}}{{template "head" .}}
+<div class="jumbotron jumbotron-fluid" style="height:100%">
 <div class="container">
-<div class="jumbotron">
 <h3>Hello from Comet</h3>
 <p class="lead">Build Desktop Apps in Electron, Go, Bootstrap and Vuejs</p>
 <p class="text-center">
 <iframe width="560" height="315" src="https://www.youtube.com/embed/nKIu9yen5nc?list=PLuKvd2GQmvCBF1YOhgkdGnbFQKnvuXHSK" frameborder="0" allowfullscreen></iframe>
 </p>
 
-</div>
-</div>
+</div><!--/.container-->
+</div><!--/.jumbotron-->
 {{template "foot" .}}
 {{end}}
 `

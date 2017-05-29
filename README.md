@@ -27,23 +27,48 @@ comet init
 
 comet start
 # launches app
+
+comet 
+# initializes and starts app
 ```
 
-### Launch Static Website/ Single Page App/ PWA as desktop app
+### Launch Static Directory Single Page App/ PWA as desktop app
 Assuming the directory ~/myapphtml is a static website with an index.html
 
 ```
-cd ~/myapphtml
+# in any directory
 comet init
-comet start -webapp .
+comet start -static ~/myapphtml
 ```
 
-### TODO
+### Launch Website/ Web App as Desktop app
+
+Serve a publicly accessible url as desktop app
+```
+comet start -url https://etelej.com
+
+```
+
+- Note: changing the start URL (loadURL) is permanent (i.e. affects next run of `comet`),
+  the default start url is `http://localhost:8080`, ie revert with `comet start -url http://localhost:8080`
+
+
+### Other commands
+
+```
+comet reset 
+# resets the comet installation on the directory
+```
+
+
+## TODO
 
 - [x] Define basic projects structure and working example
 - [x] Launch electron from Go
 - [x] Setup comet CLI subcommands & usage (init,start)
 - [x] Support serving static website as desktop app
+- [x] Support serving abitrary url as app
+- [ ] Add reset/ refresh command
 - [ ] Setup app templates for easier bootstrapping options
 - [ ] __Packaging and distribution__
 

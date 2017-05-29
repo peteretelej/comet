@@ -1,18 +1,19 @@
 package ice
 
 import (
-	"archive/zip"
 	"encoding/json"
 	"errors"
 	"fmt"
 	"io"
 	"io/ioutil"
-	"log"
 	"net/http"
 	"os"
+	"path/filepath"
 	"runtime"
 	"strings"
 	"time"
+
+	"github.com/mholt/archiver"
 )
 
 const releaseAPI = "https://api.github.com/repos/electron/electron/releases/latest"
@@ -44,48 +45,11 @@ func GetElectron() error {
 	if err := zipFile.Close(); err != nil {
 		return err
 	}
-	r, err := zip.OpenReader(zipFile.Name())
-	if err != nil {
+	basedir := "electron"
+	if err := os.MkdirAll(filepath.Join("electron", "resources", "app"), 0755); err != nil {
 		return err
 	}
-	for _, f := range r.File {
-		if f.FileInfo().IsDir() {
-			if err := os.MkdirAll(f.Name, f.Mode()); err != nil {
-				return err
-			}
-			continue
-		}
-		if _, err := os.Stat(f.Name); err == nil {
-			return errors.New("files already exist in current directory delete all first")
-		}
-		if err := fileCopy(f); err != nil {
-			return err
-		}
-	}
-	return nil
-}
-
-func fileCopy(f *zip.File) error {
-	fr, err := f.Open()
-	if err != nil {
-		return err
-	}
-	defer func() {
-		if err := fr.Close(); err != nil {
-			log.Print(err)
-		}
-	}()
-	fout, err := os.Open(f.Name)
-	if err != nil {
-		return err
-	}
-	defer func() {
-		if err := fout.Close(); err != nil {
-			log.Print(err)
-		}
-	}()
-	_, err = io.Copy(fout, fr)
-	return err
+	return archiver.Zip.Open(zipFile.Name(), basedir)
 }
 
 type apiResp struct {
