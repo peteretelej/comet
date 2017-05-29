@@ -20,11 +20,8 @@ Initialize and launch
 comet init
 # initiliazes comet
 
-comet start
-# launches app
-
 comet 
-# initializes and starts app
+# starts app (initializes if needed)
 ```
 
 ### Launch Static Directory Single Page App/ PWA as desktop app
@@ -33,14 +30,14 @@ Assuming the directory ~/myapphtml is a static website with an index.html
 ```
 # in any directory
 comet init
-comet start -static ~/myapphtml
+comet -static ~/myapphtml
 ```
 
 ### Launch Website/ Web App as Desktop app
 
 Serve a publicly accessible url as desktop app
 ```
-comet start -url https://etelej.com
+comet -url https://etelej.com
 
 ```
 
