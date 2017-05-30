@@ -43,7 +43,8 @@ func main() {
 			log.Fatalf("comet: initialization failed: %v", err)
 		}
 		if err := ice.Launch(*verbose, *static, *url); err != nil {
-			log.Fatalf("comet start: %v", err)
+			fmt.Printf("comet start: %v\n", err)
+			os.Exit(1)
 		}
 		return
 	}

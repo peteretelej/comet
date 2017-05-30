@@ -3,6 +3,7 @@ package ice
 import (
 	"fmt"
 	"log"
+	"os"
 	"os/exec"
 )
 
@@ -28,7 +29,11 @@ func Launch(verbose bool, staticDir, staticURL string) error {
 	if verbose {
 		log.Print("comet: launching electron")
 	}
-
+	if staticDir != "" {
+		if _, err := os.Stat(staticDir); err != nil {
+			return fmt.Errorf("static directory specified '%s' not found", staticDir)
+		}
+	}
 	go func() {
 		if staticURL != "" {
 			UpdateURL(staticURL)
