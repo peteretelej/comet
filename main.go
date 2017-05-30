@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"os/exec"
 
 	"github.com/peteretelej/comet/ice"
 )
@@ -26,7 +25,7 @@ func main() {
 	switch os.Args[1] {
 	case "init":
 		fmt.Println("comet init: initializing your desktop app")
-		if err := initProject(); err != nil {
+		if err := ice.InitProject(); err != nil {
 			log.Fatalf("comet init: %v", err)
 		}
 	case "package":
@@ -39,59 +38,16 @@ func main() {
 		}
 	default:
 		// start app
-		err := initProject()
+		err := ice.InitProject()
 		if err != nil {
 			log.Fatalf("comet: initialization failed: %v", err)
 		}
-		if err := startApp(*verbose, *static, *url); err != nil {
+		if err := ice.Launch(*verbose, *static, *url); err != nil {
 			log.Fatalf("comet start: %v", err)
 		}
 		return
 	}
 
-}
-func initProject() error {
-	if err := ice.InitAssets(); err != nil {
-		if err == ice.ErrAppExists {
-			return nil
-		}
-		return err
-	}
-	if err := ice.GetElectron(); err != nil {
-		return err
-	}
-	fmt.Println("comet: project initialized successfully.\nLaunch with `comet start`")
-	return nil
-}
-
-func startApp(verbose bool, staticDir, staticURL string) error {
-	ice.Verbose = verbose
-	if verbose {
-		log.Print("comet: launching electron")
-	}
-
-	go func() {
-		if staticURL != "" {
-			ice.UpdateURL(staticURL)
-			fmt.Printf("comet: serving app from url: %s\n", staticURL)
-			return
-		}
-		listen := "localhost:8080"
-		if err := ice.Serve(listen, staticDir); err != nil {
-			log.Printf("comet server crashed: %v", err)
-		}
-	}()
-
-	path, err := exec.LookPath("electron/electron")
-	if err != nil {
-		return fmt.Errorf("failed to find electron, did you run comet init?")
-	}
-	cmd := exec.Command(path, "electron")
-
-	if out, err := cmd.CombinedOutput(); err != nil {
-		return fmt.Errorf("comet unable to launch electron: %s", out)
-	}
-	return nil
 }
 
 func packageApp() error {

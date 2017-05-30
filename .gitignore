@@ -1,4 +1,7 @@
 comet
-electron*.zip
+*.zip
+*.tar.gz
+dist/
 electron/
+
 
