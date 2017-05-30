@@ -82,10 +82,12 @@ const tmplHTML = `{{define "head"}}<!DOCTYPE html>
 <meta charset="utf-8">
 <title>Comet</title>
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
-<script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n" crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
+<style>
+body{
+	display:block; width:100%; overflow:hidden;
+	background-color: #efefef;
+}
+</style>
 </head>
 <body>
 {{end}}
@@ -94,16 +96,13 @@ const tmplHTML = `{{define "head"}}<!DOCTYPE html>
 </html>
 {{end}}
 {{define "index"}}{{template "head" .}}
-<div class="jumbotron jumbotron-fluid" style="height:100%">
-<div class="container">
-<h3>Hello from Comet</h3>
-<p class="lead">Build Desktop Apps in Electron, Go, Bootstrap and Vuejs</p>
-<p class="text-center">
-<iframe width="560" height="315" src="https://www.youtube.com/embed/nKIu9yen5nc?list=PLuKvd2GQmvCBF1YOhgkdGnbFQKnvuXHSK" frameborder="0" allowfullscreen></iframe>
+<h1>Hello from Comet</h1>
+<h4>Build Desktop Apps in Electron, Go, Bootstrap and Vuejs</h4>
+<p style="text-align:center; margin:30px; ">
+<iframe style="display:inline-block;" width="560" height="315" 
+src="https://www.youtube.com/embed/nKIu9yen5nc?list=PLuKvd2GQmvCBF1YOhgkdGnbFQKnvuXHSK" 
+frameborder="0" allowfullscreen></iframe>
 </p>
-
-</div><!--/.container-->
-</div><!--/.jumbotron-->
 {{template "foot" .}}
 {{end}}
 `
