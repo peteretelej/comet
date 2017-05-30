@@ -22,12 +22,16 @@ func main() {
 	if len(os.Args) < 2 {
 		os.Args = append(os.Args, "start")
 	}
+
+	ice.Verbose = *verbose
+
 	switch os.Args[1] {
 	case "init":
 		fmt.Println("comet init: initializing your desktop app")
 		if err := ice.InitProject(); err != nil {
 			log.Fatalf("comet init: %v", err)
 		}
+		fmt.Println("comet app ready, launch with 'comet'")
 	case "package":
 		if err := packageApp(); err != nil {
 			log.Fatalf("comet package: %v", err)
@@ -42,13 +46,12 @@ func main() {
 		if err != nil {
 			log.Fatalf("comet: initialization failed: %v", err)
 		}
-		if err := ice.Launch(*verbose, *static, *url); err != nil {
+		if err := ice.Launch(*static, *url); err != nil {
 			fmt.Printf("comet start: %v\n", err)
 			os.Exit(1)
 		}
 		return
 	}
-
 }
 
 func packageApp() error {

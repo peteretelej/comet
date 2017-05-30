@@ -5,28 +5,25 @@ import (
 	"log"
 	"os"
 	"os/exec"
+	"path/filepath"
 )
 
 // InitProject initiliazes a comet project in the current working directory
 func InitProject() error {
 	if err := InitAssets(); err != nil {
-		if err == ErrAppExists {
-			return nil
-		}
 		return err
 	}
 	if err := GetElectron(); err != nil {
 		return err
 	}
-	fmt.Println("comet: project initialized successfully.\nLaunch with `comet start`")
+	log.Print("comet: project initialized successfully`")
 	return nil
 
 }
 
 // Launch starts app the application
-func Launch(verbose bool, staticDir, staticURL string) error {
-	Verbose = verbose
-	if verbose {
+func Launch(staticDir, staticURL string) error {
+	if Verbose {
 		log.Print("comet: launching electron")
 	}
 	if staticDir != "" {
@@ -46,7 +43,7 @@ func Launch(verbose bool, staticDir, staticURL string) error {
 		}
 	}()
 
-	path, err := exec.LookPath("electron/electron")
+	path, err := exec.LookPath(filepath.Join("electron", "electron"))
 	if err != nil {
 		return fmt.Errorf("failed to find electron, did you run comet init?")
 	}

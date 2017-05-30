@@ -1,9 +1,11 @@
 package ice
 
 import (
+	"encoding/json"
 	"errors"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"os"
 	"path/filepath"
 )
@@ -13,23 +15,43 @@ var ErrAppExists = errors.New("electron app already exists in directory")
 
 const defaultURL = "http://localhost:8080"
 
-var appDir = filepath.Join("electron", "resources", "app")
+var (
+	appDir = filepath.Join("electron", "resources", "app")
+)
+
+// AssetsExist checks if any of the required electron assets already exist
+func AssetsExist() bool {
+	requiredAssets := []string{"main.js", "package.json"}
+	for _, v := range requiredAssets {
+		if _, err := os.Stat(filepath.Join(appDir, v)); err == nil {
+			return true
+		}
+	}
+	return false
+}
 
 // InitAssets creates static files required by comet init in the directory specified
 // Skips prepping if all required files exist, and overwrites all if any is missing
 func InitAssets() error {
+	if AssetsExist() {
+		if Verbose {
+			log.Print("comet app assets already exist, skipping initialization")
+		}
+		return nil
+	}
 	if err := os.MkdirAll(appDir, 0755); err != nil {
 		return fmt.Errorf("unable to create app dir %s: %v", appDir, err)
 	}
+	pkgj, err := json.MarshalIndent(pj, "", "	")
+	if err != nil {
+		return fmt.Errorf("unable to parse package.json: %v", err)
+	}
 	required := map[string]string{
 		"main.js":      fmt.Sprintf(mainJS, defaultURL),
-		"package.json": pkgJSON,
+		"package.json": string(pkgj),
 	}
 	for k, v := range required {
 		fn := filepath.Join(appDir, k)
-		if _, err := os.Stat(fn); err == nil {
-			return ErrAppExists
-		}
 		err := ioutil.WriteFile(fn, []byte(v), 0644)
 		if err != nil {
 			return err
@@ -67,9 +89,14 @@ app.on('window-all-closed', () => {
 })
 `
 
-const pkgJSON = `{
-	"name": "@peteretelej/comet",
-	"version": "1.0.0",
-	"main": "main.js"
+type pkgJSON struct {
+	Name    string `json:"name"`
+	Version string `json:"version"`
+	Main    string `json:"main"`
 }
-`
+
+var pj = &pkgJSON{
+	Name:    "@peteretelej/comet",
+	Version: "1.0.0",
+	Main:    "main.js",
+}

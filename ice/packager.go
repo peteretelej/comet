@@ -6,8 +6,10 @@ import (
 	"fmt"
 	"io"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"os"
+	"os/exec"
 	"path/filepath"
 	"runtime"
 	"strings"
@@ -18,8 +20,20 @@ import (
 
 const releaseAPI = "https://api.github.com/repos/electron/electron/releases/latest"
 
+// ElectronExists checks if an electron prebuilt binary exists
+func ElectronExists() bool {
+	_, err := exec.LookPath(filepath.Join("electron", "electron"))
+	return err == nil
+}
+
 // GetElectron gets electron pre-built binaries for packaging and distribution
 func GetElectron() error {
+	if ElectronExists() {
+		if Verbose {
+			log.Print("electron already exists in directory, skipping fetch")
+		}
+		return nil
+	}
 	url, err := releaseURL()
 	if err != nil {
 		return fmt.Errorf("unable to get latest Electron release: %v", err)
