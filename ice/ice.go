@@ -16,7 +16,9 @@ func InitProject() error {
 	if err := GetElectron(); err != nil {
 		return err
 	}
-	log.Print("comet: project initialized successfully`")
+	if Verbose {
+		log.Print("comet: project initialized successfully`")
+	}
 	return nil
 
 }

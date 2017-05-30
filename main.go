@@ -27,6 +27,7 @@ func main() {
 
 	switch os.Args[1] {
 	case "init":
+		ice.Verbose = true
 		fmt.Println("comet init: initializing your desktop app")
 		if err := ice.InitProject(); err != nil {
 			log.Fatalf("comet init: %v", err)

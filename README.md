@@ -31,6 +31,9 @@ Assuming the directory ~/myapphtml is a static website with an index.html
 # in any directory
 comet init
 comet -static ~/myapphtml
+
+comet -static ./static
+# serves the vue app that comes with comet at static/
 ```
 
 ### Launch Website/ Web App as Desktop app
