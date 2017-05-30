@@ -1,6 +1,6 @@
-# comet - Desktop Apps with Electron, Go, Bootstrap, Vuejs
+# comet - Desktop Apps with Go
 
-Boostrap for desktop apps built with Electron and powered by Go. __WIP__
+Boostrap for desktop apps with Go; wraps electron in a neat cli for packaging and distributing  static directories, local servers, public services etc as desktop apps.
 
 ### Work In Progress
 ![stability-wip](https://img.shields.io/badge/stability-work_in_progress-lightgrey.svg)
@@ -32,8 +32,8 @@ Assuming the directory ~/myapphtml is a static website with an index.html
 comet init
 comet -static ~/myapphtml
 
-comet -static ./static
-# serves the vue app that comes with comet at static/
+comet -static $GOPATH/src/github.com/peteretelej/comet/demo
+# launches the demo directory that comes with comet
 ```
 
 ### Launch Website/ Web App as Desktop app
