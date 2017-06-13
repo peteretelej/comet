@@ -1,7 +1,6 @@
 comet
+*.exe
 *.zip
 *.tar.gz
 dist/
 electron/
-
-
